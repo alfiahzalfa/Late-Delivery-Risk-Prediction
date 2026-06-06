@@ -1,0 +1,22 @@
+# Environment
+.env
+.venv/
+__pycache__/
+*.pyc
+
+# Data & Model (file besar)
+dataset/
+models/*.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+trial and error/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# CatBoost
+catboost_info/
+
+presentation/
