@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# ── MongoDB ───────────────────────────────────────────────────────────────────
+# MongoDB
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME   = os.getenv("MONGO_DB", "supply_chain")
 
@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
     client.close()
     print("MongoDB disconnected")
 
-# ── Models ────────────────────────────────────────────────────────────────────
+# Models
 MODEL_S1 = joblib.load("models/baseline_best_s1.pkl")
 MODEL_S2 = joblib.load("models/baseline_best_s2.pkl")
 
@@ -49,7 +49,7 @@ SHIPPING_ORDER = {
     'Standard Class': 3,
 }
 
-# ── App ───────────────────────────────────────────────────────────────────────
+# App
 app = FastAPI(
     title="Late Delivery Risk Prediction API",
     description="Prediksi risiko keterlambatan pengiriman — Skenario 1 & 2",
@@ -64,7 +64,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Schemas ───────────────────────────────────────────────────────────────────
+# Schemas
 class PredictS1Request(BaseModel):
     days_for_shipment_scheduled : int   = Field(..., ge=0, example=4)
     shipping_mode               : str   = Field(..., example="Standard Class")
@@ -92,7 +92,7 @@ class PredictResponse(BaseModel):
     input_data      : dict
     timestamp       : str
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+# Helpers
 def _encode_s1(req: PredictS1Request) -> pd.DataFrame:
     row = {
         'Days for shipment (scheduled)': req.days_for_shipment_scheduled,
@@ -144,7 +144,7 @@ async def _save_to_mongo(scenario: str, input_data: dict, prediction: int,
     }
     await collection.insert_one(doc)
 
-# ── Endpoints ─────────────────────────────────────────────────────────────────
+# Endpoints
 @app.get("/", tags=["Health"])
 async def root():
     return {"status": "ok", "message": "Late Delivery Risk Prediction API"}

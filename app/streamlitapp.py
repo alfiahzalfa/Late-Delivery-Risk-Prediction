@@ -1,4 +1,3 @@
-# app/streamlit_app.py
 import os
 import requests
 import pandas as pd
@@ -10,7 +9,7 @@ from datetime import datetime
 
 API_URL = os.getenv("API_URL", "http://localhost:8000")
 
-# ── Config ────────────────────────────────────────────────────────────────────
+# Config
 st.set_page_config(
     page_title="Late Delivery Risk Prediction",
     page_icon="🚚",
@@ -18,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ── Style ─────────────────────────────────────────────────────────────────────
+# Style
 st.markdown("""
 <style>
 .risk-low p, .risk-low h4 { color: #085041 !important; }
@@ -26,8 +25,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ── Sidebar ───────────────────────────────────────────────────────────────────
-with st.sidebar:
+# Sidebar 
     st.image("https://img.icons8.com/fluency/96/delivery.png", width=64)
     st.title("Supply Chain\nRisk Prediction")
     st.markdown("---")
@@ -47,14 +45,14 @@ with st.sidebar:
     except Exception:
         st.error("🔴 API Offline")
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# Main
 st.title("🚚 Late Delivery Risk Prediction")
 st.caption("Prediksi risiko keterlambatan pengiriman berbasis Machine Learning")
 st.markdown("---")
 
 tab_predict, tab_history, tab_info = st.tabs(["🎯 Prediksi", "📋 Riwayat", "ℹ️ Info Model"])
 
-# ─── Tab Prediksi ─────────────────────────────────────────────────────────────
+# Tab Prediksi
 with tab_predict:
 
     is_s2 = "2" in scenario
@@ -92,7 +90,7 @@ with tab_predict:
             format="%.2f"
         )
 
-    # Skenario 2 — tambahan input
+    # Skenario 2
     if is_s2:
         st.markdown("---")
         st.markdown("**Informasi Tambahan (Skenario 2)**")
@@ -143,7 +141,7 @@ with tab_predict:
                 proba = result["probability"]
                 label = result["prediction_label"]
 
-                # ── Hasil ──
+                # Hasil
                 st.markdown("### 📊 Hasil Prediksi")
                 r1, r2, r3 = st.columns(3)
                 with r1:
@@ -153,7 +151,7 @@ with tab_predict:
                 with r3:
                     st.metric("Skenario", result["scenario"].split(" - ")[0])
 
-                # ── Risk card ──
+                # Risk card
                 if pred == 1:
                     st.markdown(f"""
                     <div class="risk-high">
@@ -171,7 +169,7 @@ with tab_predict:
                     </div>
                     """, unsafe_allow_html=True)
 
-                # ── Gauge chart ──
+                # Gauge chart
                 st.markdown("#### Probabilitas Risiko")
                 fig, ax = plt.subplots(figsize=(6, 1.2))
                 fig.patch.set_facecolor('#FAFAFA')
@@ -195,7 +193,7 @@ with tab_predict:
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 
-# ─── Tab Riwayat ──────────────────────────────────────────────────────────────
+#  Tab Riwayat
 with tab_history:
     st.subheader("📋 Riwayat Prediksi")
 
@@ -225,7 +223,7 @@ with tab_history:
                 df_hist = pd.DataFrame(rows)
                 st.dataframe(df_hist, use_container_width=True, hide_index=True)
 
-                # ── Mini chart distribusi ──
+                # Mini chart distribusi
                 st.markdown("#### Distribusi Prediksi")
                 counts = df_hist["Prediksi"].value_counts()
                 fig2, ax2 = plt.subplots(figsize=(4, 3))
@@ -244,7 +242,7 @@ with tab_history:
         except Exception as e:
             st.error(f"❌ Error: {str(e)}")
 
-# ─── Tab Info ─────────────────────────────────────────────────────────────────
+# Tab Info
 with tab_info:
     st.subheader("ℹ️ Informasi Model")
 
@@ -279,11 +277,3 @@ with tab_info:
         - Order Region
         - Customer State
         """)
-
-    st.markdown("---")
-    st.markdown("""
-    **Dataset:** DataCo Smart Supply Chain (Kaggle, Constante et al., 2019)  
-    **Records:** 180,519 | **Target:** Late Delivery Risk (Binary)  
-    **Tuning:** Optuna TPE Sampler (50 trials) + RandomizedSearchCV + HalvingRandomSearchCV  
-    **Metrik Utama:** F1-Score + ROC-AUC
-    """)

@@ -2,7 +2,6 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from unittest.mock import AsyncMock, patch
 
-# Mock MongoDB sebelum import app
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
