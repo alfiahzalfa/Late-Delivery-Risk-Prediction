@@ -26,6 +26,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Sidebar 
+with st.sidebar:
     st.image("https://img.icons8.com/fluency/96/delivery.png", width=64)
     st.title("Supply Chain\nRisk Prediction")
     st.markdown("---")
