@@ -3,19 +3,18 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from fastapi import FastAPI
 from backend.app.core.config import MONGO_URI, DB_NAME
 
-client:     AsyncIOMotorClient | None = None
-db         = None
+client = None
+db = None
 collection = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Buka koneksi MongoDB saat startup, tutup saat shutdown."""
     global client, db, collection
-    client     = AsyncIOMotorClient(MONGO_URI)
-    db         = client[DB_NAME]
+    client = AsyncIOMotorClient(MONGO_URI)
+    db = client[DB_NAME]
     collection = db["predictions"]
-    print(f"✅ MongoDB connected: {DB_NAME}")
+    print(f"MongoDB connected: {DB_NAME}")
     yield
     client.close()
     print("MongoDB disconnected")

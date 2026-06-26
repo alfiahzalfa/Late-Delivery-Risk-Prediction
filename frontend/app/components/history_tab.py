@@ -6,15 +6,12 @@ from frontend.app.utils.charts import render_distribution_chart
 
 
 def render_history_tab():
-    """Tampilkan tab riwayat prediksi dari backend."""
     st.subheader("📋 Riwayat Prediksi")
 
-    col_h1, col_h2 = st.columns([1, 3])
-    with col_h1:
-        limit = st.number_input(
-            "Tampilkan N terakhir", min_value=5, max_value=100, value=20
-        )
-    with col_h2:
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        limit = st.number_input("Tampilkan N terakhir", min_value=5, max_value=100, value=20)
+    with col2:
         st.button("🔄 Refresh", use_container_width=False)
 
     try:
@@ -25,9 +22,9 @@ def render_history_tab():
 
         rows = [
             {
-                "Timestamp"   : d.get("timestamp", "")[:19].replace("T", " "),
-                "Skenario"    : d.get("scenario", ""),
-                "Prediksi"    : d.get("label", ""),
+                "Timestamp": d.get("timestamp", "")[:19].replace("T", " "),
+                "Skenario": d.get("scenario", ""),
+                "Prediksi": d.get("label", ""),
                 "Probabilitas": f'{d.get("probability", 0)*100:.1f}%',
             }
             for d in data

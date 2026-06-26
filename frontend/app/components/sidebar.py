@@ -3,9 +3,6 @@ from frontend.app.utils.api_client import check_api_health
 
 
 def render_sidebar() -> str:
-    """
-    Tampilkan sidebar dan kembalikan skenario yang dipilih: 's1' atau 's2'.
-    """
     with st.sidebar:
         st.image("https://img.icons8.com/fluency/96/delivery.png", width=64)
         st.title("Supply Chain\nRisk Prediction")

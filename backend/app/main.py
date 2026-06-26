@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.core.database import lifespan
 from backend.app.routes import predict, history
 
-# ── App ────────────────────────────────────────────────────────────────────────
+# app
 app = FastAPI(
     title="Late Delivery Risk Prediction API",
     description="Prediksi risiko keterlambatan pengiriman — Skenario 1 & 2",
@@ -20,12 +20,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Routers ────────────────────────────────────────────────────────────────────
+# routes
 app.include_router(predict.router, prefix="/predict")
 app.include_router(history.router)
 
 
-# ── Health ─────────────────────────────────────────────────────────────────────
+# health check
 @app.get("/", tags=["Health"])
 async def root():
     return {"status": "ok", "message": "Late Delivery Risk Prediction API"}

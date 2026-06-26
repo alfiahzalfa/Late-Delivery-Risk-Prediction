@@ -1,28 +1,14 @@
-# ── Python ─────────────────────────────────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
 .venv/
-
-# ── Environment ────────────────────────────────────────────────────────────────
-.env                   # JANGAN commit secrets!
+.env
 .env.*
-
-# ── Data & Model (file besar — gunakan Git LFS jika perlu) ────────────────────
 dataset/
 models/*.pkl
 backend/models/*.pkl
-
-# ── Jupyter ────────────────────────────────────────────────────────────────────
 .ipynb_checkpoints/
-
-# ── CatBoost ───────────────────────────────────────────────────────────────────
 catboost_info/
 **/catboost_info/
-
-# ── OS ─────────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
-
-# ── Lain-lain ──────────────────────────────────────────────────────────────────
-presentation/

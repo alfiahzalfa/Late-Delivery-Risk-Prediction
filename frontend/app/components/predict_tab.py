@@ -5,12 +5,12 @@ from frontend.app.utils.charts import render_gauge_chart
 
 
 def render_predict_tab(scenario: str):
-    """Tampilkan tab prediksi — form input + hasil prediksi."""
     is_s2 = scenario == "s2"
 
     st.subheader("Input Data Order")
     col1, col2 = st.columns(2)
 
+    # shipping info
     with col1:
         st.markdown("**Informasi Pengiriman**")
         days_shipment = st.number_input(
@@ -26,11 +26,10 @@ def render_predict_tab(scenario: str):
             ["DEBIT", "TRANSFER", "PAYMENT", "CASH"],
         )
 
+    # order info
     with col2:
         st.markdown("**Informasi Order**")
-        order_qty = st.number_input(
-            "Order Item Quantity", min_value=1, max_value=100, value=3
-        )
+        order_qty = st.number_input("Order Item Quantity", min_value=1, max_value=100, value=3)
         product_price = st.number_input(
             "Product Price ($)", min_value=0.0, max_value=2000.0, value=199.99, step=0.01
         )
@@ -39,19 +38,16 @@ def render_predict_tab(scenario: str):
             step=0.01, format="%.2f",
         )
 
-    # Field tambahan untuk Skenario 2
-    profit_ratio  = None
-    order_region  = None
-    customer_state = None
+    profit_ratio = order_region = customer_state = None
 
+    # extra fields for scenario 2
     if is_s2:
         st.markdown("---")
         st.markdown("**Informasi Tambahan (Skenario 2)**")
         col3, col4 = st.columns(2)
         with col3:
             profit_ratio = st.number_input(
-                "Order Item Profit Ratio", min_value=-1.0, max_value=1.0,
-                value=0.25, step=0.01,
+                "Order Item Profit Ratio", min_value=-1.0, max_value=1.0, value=0.25, step=0.01
             )
             order_region = st.selectbox("Order Region", [
                 "Western Europe", "Central America", "Oceania", "Eastern Asia",
@@ -72,26 +68,27 @@ def render_predict_tab(scenario: str):
     if predict_btn:
         payload = {
             "days_for_shipment_scheduled": days_shipment,
-            "shipping_mode"              : shipping_mode,
-            "order_type"                 : order_type,
-            "order_item_quantity"        : order_qty,
-            "product_price"              : product_price,
-            "order_item_discount_rate"   : discount_rate,
+            "shipping_mode": shipping_mode,
+            "order_type": order_type,
+            "order_item_quantity": order_qty,
+            "product_price": product_price,
+            "order_item_discount_rate": discount_rate,
         }
         if is_s2:
             payload.update({
                 "order_item_profit_ratio": profit_ratio,
-                "order_region"           : order_region,
-                "customer_state"         : customer_state,
+                "order_region": order_region,
+                "customer_state": customer_state,
             })
 
         with st.spinner("Memproses prediksi..."):
             try:
                 result = predict(scenario, payload)
-                pred   = result["prediction"]
-                proba  = result["probability"]
-                label  = result["prediction_label"]
+                pred = result["prediction"]
+                proba = result["probability"]
+                label = result["prediction_label"]
 
+                # result
                 st.markdown("### 📊 Hasil Prediksi")
                 r1, r2, r3 = st.columns(3)
                 with r1:
@@ -101,7 +98,7 @@ def render_predict_tab(scenario: str):
                 with r3:
                     st.metric("Skenario", result["scenario"].split(" - ")[0])
 
-                # Risk card
+                # risk card
                 if pred == 1:
                     st.markdown(f"""
                     <div class="risk-high">
@@ -119,6 +116,7 @@ def render_predict_tab(scenario: str):
                     </div>
                     """, unsafe_allow_html=True)
 
+                # gauge chart
                 st.markdown("#### Probabilitas Risiko")
                 render_gauge_chart(proba)
 

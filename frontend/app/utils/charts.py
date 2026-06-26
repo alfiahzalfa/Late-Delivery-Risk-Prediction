@@ -3,10 +3,9 @@ import streamlit as st
 
 
 def render_gauge_chart(proba: float):
-    """Tampilkan gauge bar chart probabilitas risiko."""
     fig, ax = plt.subplots(figsize=(6, 1.2))
     fig.patch.set_facecolor("#FAFAFA")
-    ax.barh(0, 1,     color="#E8F5E9", height=0.5)
+    ax.barh(0, 1, color="#E8F5E9", height=0.5)
     ax.barh(0, proba, color="#E05A3A" if proba > 0.5 else "#2EAF7D", height=0.5)
     ax.axvline(0.5, color="gray", linestyle="--", linewidth=1, alpha=0.6)
     ax.set_xlim(0, 1)
@@ -26,10 +25,9 @@ def render_gauge_chart(proba: float):
 
 
 def render_distribution_chart(df_hist):
-    """Tampilkan bar chart distribusi prediksi Terlambat vs Tidak Terlambat."""
     counts = df_hist["Prediksi"].value_counts()
     fig, ax = plt.subplots(figsize=(4, 3))
-    colors  = ["#E05A3A" if l == "Terlambat" else "#2EAF7D" for l in counts.index]
+    colors = ["#E05A3A" if l == "Terlambat" else "#2EAF7D" for l in counts.index]
     ax.bar(counts.index, counts.values, color=colors, edgecolor="white")
     ax.set_ylabel("Jumlah")
     ax.spines[["top", "right"]].set_visible(False)
