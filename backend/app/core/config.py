@@ -8,8 +8,8 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = os.getenv("MONGO_DB", "supply_chain")
 
-# Path ke model .pkl
-BASE_DIR = Path(__file__).resolve().parents[3]
+# Path ke model paths
+BASE_DIR = Path(__file__).resolve().parents[2]  # backend/
 MODELS_DIR = BASE_DIR / "models"
 MODEL_S1_PATH = MODELS_DIR / "baseline_best_s1.pkl"
 MODEL_S2_PATH = MODELS_DIR / "baseline_best_s2.pkl"
