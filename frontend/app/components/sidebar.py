@@ -4,8 +4,7 @@ from frontend.app.utils.api_client import check_api_health
 
 def render_sidebar() -> str:
     with st.sidebar:
-        st.image("https://img.icons8.com/fluency/96/delivery.png", width=64)
-        st.title("Supply Chain\nRisk Prediction")
+        st.markdown("## 🚚 Supply Chain\nRisk Prediction")
         st.markdown("---")
 
         scenario_label = st.radio(
@@ -22,3 +21,4 @@ def render_sidebar() -> str:
             st.error("🔴 API Offline")
 
     return "s2" if "2" in scenario_label else "s1"
+

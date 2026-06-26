@@ -1,38 +1,56 @@
-import matplotlib.pyplot as plt
 import streamlit as st
+import plotly.graph_objects as go
 
 
 def render_gauge_chart(proba: float):
-    fig, ax = plt.subplots(figsize=(6, 1.2))
-    fig.patch.set_facecolor("#FAFAFA")
-    ax.barh(0, 1, color="#E8F5E9", height=0.5)
-    ax.barh(0, proba, color="#E05A3A" if proba > 0.5 else "#2EAF7D", height=0.5)
-    ax.axvline(0.5, color="gray", linestyle="--", linewidth=1, alpha=0.6)
-    ax.set_xlim(0, 1)
-    ax.set_yticks([])
-    ax.set_xticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
-    ax.spines[["top", "right", "left"]].set_visible(False)
-    ax.set_facecolor("#FAFAFA")
-    ax.text(
-        proba, 0, f" {proba*100:.1f}%",
-        va="center", fontweight="bold",
-        color="#E05A3A" if proba > 0.5 else "#2EAF7D",
-    )
-    plt.tight_layout()
-    st.pyplot(fig)
-    plt.close()
+    color = "#E05A3A" if proba > 0.5 else "#2EAF7D"
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=proba * 100,
+        number={"suffix": "%", "font": {"size": 28, "color": color}},
+        gauge={
+            "axis": {"range": [0, 100], "ticksuffix": "%"},
+            "bar": {"color": color},
+            "bgcolor": "white",
+            "borderwidth": 1,
+            "bordercolor": "#ccc",
+            "steps": [
+                {"range": [0, 50], "color": "#E8F5E9"},
+                {"range": [50, 100], "color": "#FDECEA"},
+            ],
+            "threshold": {
+                "line": {"color": "gray", "width": 2},
+                "thickness": 0.75,
+                "value": 50,
+            },
+        },
+        title={"text": "Probabilitas Terlambat", "font": {"size": 14}},
+    ))
+    fig.update_layout(height=250, margin=dict(t=40, b=10, l=20, r=20))
+    st.plotly_chart(fig, width="stretch")
 
 
 def render_distribution_chart(df_hist):
-    counts = df_hist["Prediksi"].value_counts()
-    fig, ax = plt.subplots(figsize=(4, 3))
-    colors = ["#E05A3A" if l == "Terlambat" else "#2EAF7D" for l in counts.index]
-    ax.bar(counts.index, counts.values, color=colors, edgecolor="white")
-    ax.set_ylabel("Jumlah")
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.set_facecolor("#FAFAFA")
-    fig.patch.set_facecolor("#FAFAFA")
-    plt.tight_layout()
-    st.pyplot(fig)
-    plt.close()
+    counts = df_hist["Prediksi"].value_counts().reset_index()
+    counts.columns = ["Prediksi", "Jumlah"]
+    colors = ["#E05A3A" if l == "Terlambat" else "#2EAF7D" for l in counts["Prediksi"]]
+
+    fig = go.Figure(go.Bar(
+        x=counts["Prediksi"],
+        y=counts["Jumlah"],
+        marker_color=colors,
+        text=counts["Jumlah"],
+        textposition="outside",
+    ))
+    fig.update_layout(
+        title="Distribusi Hasil Prediksi",
+        xaxis_title="",
+        yaxis_title="Jumlah",
+        plot_bgcolor="white",
+        height=320,
+        margin=dict(t=40, b=20, l=20, r=20),
+        showlegend=False,
+    )
+    fig.update_yaxes(gridcolor="#F0F0F0")
+    st.plotly_chart(fig, width="stretch")
+

@@ -1,5 +1,5 @@
 import streamlit as st
-import requests
+from requests.exceptions import ConnectionError as RequestsConnectionError
 from frontend.app.utils.api_client import predict
 from frontend.app.utils.charts import render_gauge_chart
 
@@ -63,7 +63,7 @@ def render_predict_tab(scenario: str):
             )
 
     st.markdown("---")
-    predict_btn = st.button("🔍 Prediksi Risiko", type="primary", use_container_width=True)
+    predict_btn = st.button("🔍 Prediksi Risiko", type="primary", width="stretch")
 
     if predict_btn:
         payload = {
@@ -120,7 +120,7 @@ def render_predict_tab(scenario: str):
                 st.markdown("#### Probabilitas Risiko")
                 render_gauge_chart(proba)
 
-            except requests.exceptions.ConnectionError:
+            except RequestsConnectionError:
                 st.error("❌ Tidak bisa terhubung ke API. Pastikan FastAPI sudah berjalan.")
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")

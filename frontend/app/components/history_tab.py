@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-import requests
+from requests.exceptions import ConnectionError as RequestsConnectionError
 from frontend.app.utils.api_client import get_history
 from frontend.app.utils.charts import render_distribution_chart
 
@@ -8,11 +8,17 @@ from frontend.app.utils.charts import render_distribution_chart
 def render_history_tab():
     st.subheader("📋 Riwayat Prediksi")
 
+    # init session state untuk refresh counter
+    if "history_refresh" not in st.session_state:
+        st.session_state["history_refresh"] = 0
+
     col1, col2 = st.columns([1, 3])
     with col1:
         limit = st.number_input("Tampilkan N terakhir", min_value=5, max_value=100, value=20)
     with col2:
-        st.button("🔄 Refresh", use_container_width=False)
+        if st.button("🔄 Refresh", width="content"):
+            st.session_state["history_refresh"] += 1
+            st.rerun()
 
     try:
         data = get_history(limit)
@@ -35,7 +41,7 @@ def render_history_tab():
         st.markdown("#### Distribusi Prediksi")
         render_distribution_chart(df_hist)
 
-    except requests.exceptions.ConnectionError:
+    except RequestsConnectionError:
         st.error("❌ Tidak bisa terhubung ke API.")
     except Exception as e:
         st.error(f"❌ Error: {str(e)}")
