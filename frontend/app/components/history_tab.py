@@ -8,7 +8,6 @@ from frontend.app.utils.charts import render_distribution_chart
 def render_history_tab():
     st.subheader("📋 Riwayat Prediksi")
 
-    # init session state untuk refresh counter
     if "history_refresh" not in st.session_state:
         st.session_state["history_refresh"] = 0
 
@@ -36,7 +35,7 @@ def render_history_tab():
             for d in data
         ]
         df_hist = pd.DataFrame(rows)
-        st.dataframe(df_hist, use_container_width=True, hide_index=True)
+        st.dataframe(df_hist, width="stretch", hide_index=True)
 
         st.markdown("#### Distribusi Prediksi")
         render_distribution_chart(df_hist)

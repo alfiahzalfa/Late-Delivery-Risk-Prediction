@@ -1,14 +1,13 @@
 import pytest
 from httpx import AsyncClient, ASGITransport
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
-import sys, os
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+from backend.app.main import app
+
 
 @pytest.mark.asyncio
 async def test_health():
-    with patch("app.main.collection", None):
-        from app.main import app
+    with patch("backend.app.core.database.collection", None):
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url="http://test"
         ) as client:
@@ -16,10 +15,10 @@ async def test_health():
     assert r.status_code == 200
     assert r.json()["status"] == "ok"
 
+
 @pytest.mark.asyncio
 async def test_predict_s1():
-    with patch("app.main.collection", None):
-        from app.main import app
+    with patch("backend.app.core.database.collection", None):
         payload = {
             "days_for_shipment_scheduled": 4,
             "shipping_mode"              : "Standard Class",
@@ -36,4 +35,4 @@ async def test_predict_s1():
     data = r.json()
     assert "prediction" in data
     assert data["prediction"] in [0, 1]
-    assert 0 <= data["probability"] <= 1
+    assert 0 <= data["probability"] <= 1
